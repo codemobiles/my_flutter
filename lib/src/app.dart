@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_flutter/src/pages/home/home_page.dart';
+import 'package:my_flutter/src/pages/login/login_page.dart';
 
 class App extends StatelessWidget {
   @override
@@ -11,7 +12,7 @@ class App extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: LoginPage(),
     );
   }//command + option + l
    //ctrl + alt + l
