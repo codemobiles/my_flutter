@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_flutter/src/commons/constants.dart';
+import 'package:my_flutter/src/pages/login/background.dart';
 
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
-      body: Column(
-        children: [
-          SizedBox(height: 62),
-          Image.asset(Constants.IMAGE_HEADER),
-          _buildCard(),
-          _buildForgotPassword(),
-          _buildDivider(),
-          SocialLogin(),
-        ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: Background.gradient,
+        ),
+        child: Column(
+          children: [
+            SizedBox(height: 62),
+            Image.asset(Constants.IMAGE_HEADER),
+            _buildCard(),
+            _buildForgotPassword(),
+            _buildDivider(),
+            SocialLogin(),
+          ],
+        ),
       ),
     );
   }
@@ -28,7 +33,7 @@ class LoginPage extends StatelessWidget {
         height: 1,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              colors: isRight ? colors : colors.reversed.toList(),
+               colors: isRight ? colors : colors.reversed.toList(),
               stops: [0, 1],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight),
