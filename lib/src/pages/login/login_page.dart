@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
           children: [
             SizedBox(height: 62),
             Image.asset(Constants.IMAGE_HEADER),
-            _buildCard(),
+            Form(),
             _buildForgotPassword(),
             _buildDivider(),
             SocialLogin(),
@@ -33,7 +33,7 @@ class LoginPage extends StatelessWidget {
         height: 1,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-               colors: isRight ? colors : colors.reversed.toList(),
+              colors: isRight ? colors : colors.reversed.toList(),
               stops: [0, 1],
               begin: Alignment.centerLeft,
               end: Alignment.centerRight),
@@ -71,21 +71,71 @@ class LoginPage extends StatelessWidget {
       child: Text("Forgot password?"),
     );
   }
+}
 
-  Card _buildCard() {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 12),
-      child: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Text("username"),
-            Text("password"),
-          ],
+class Form extends StatefulWidget {
+  Form({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _FormState createState() => _FormState();
+}
+
+class _FormState extends State<Form> {
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController?.dispose();
+    _passwordController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        Card(
+          margin: EdgeInsets.only(top: 28, bottom: 23, left: 22, right: 22),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 22),
+            child: Column(
+              children: [
+                buildUsernameInput(),
+                buildPasswordInput(),
+                SizedBox(height: 32),
+              ],
+            ),
+          ),
         ),
-      ),
+        RaisedButton(
+          onPressed: () {
+            //TODO
+          },
+          child: Text("LOGIN"),
+        ),
+      ],
     );
   }
+
+  buildUsernameInput() => TextField(
+        controller: _usernameController,
+        decoration: InputDecoration(
+          icon: Icon(Icons.person),
+          hintText: "username",
+        ),
+      );
+
+  buildPasswordInput() => TextField(
+        controller: _passwordController,
+        decoration: InputDecoration(
+          icon: Icon(Icons.lock),
+          hintText: "password",
+        ),
+      );
 }
 
 class SocialLogin extends StatelessWidget {
