@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_flutter/src/commons/constants.dart';
 import 'package:my_flutter/src/pages/login/background.dart';
+import 'package:my_flutter/src/pages/login/widgets/social_login.dart';
+import 'package:my_flutter/src/pages/login/widgets/form.dart' as myForm;
 
 class LoginPage extends StatelessWidget {
   @override
@@ -15,7 +16,7 @@ class LoginPage extends StatelessWidget {
           children: [
             SizedBox(height: 62),
             Image.asset(Constants.IMAGE_HEADER),
-            Form(),
+            myForm.Form(),
             _buildForgotPassword(),
             _buildDivider(),
             SocialLogin(),
@@ -73,133 +74,4 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class Form extends StatefulWidget {
-  Form({
-    Key key,
-  }) : super(key: key);
 
-  @override
-  _FormState createState() => _FormState();
-}
-
-class _FormState extends State<Form> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _usernameController?.dispose();
-    _passwordController?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Card(
-          margin: EdgeInsets.only(top: 28, bottom: 23, left: 22, right: 22),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 22),
-            child: Column(
-              children: [
-                buildUsernameInput(),
-                buildPasswordInput(),
-                SizedBox(height: 32),
-              ],
-            ),
-          ),
-        ),
-        RaisedButton(
-          onPressed: () {
-            //TODO
-          },
-          child: Text("LOGIN"),
-        ),
-      ],
-    );
-  }
-
-  buildUsernameInput() => TextField(
-        controller: _usernameController,
-        decoration: InputDecoration(
-          icon: Icon(Icons.person),
-          hintText: "username",
-        ),
-      );
-
-  buildPasswordInput() => TextField(
-        controller: _passwordController,
-        decoration: InputDecoration(
-          icon: Icon(Icons.lock),
-          hintText: "password",
-        ),
-      );
-}
-
-class SocialLogin extends StatelessWidget {
-  const SocialLogin({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        buildButton(
-          onPressed: () {
-            print("S: 1");
-          },
-          icon: FontAwesomeIcons.facebookF,
-          color: Colors.blue,
-        ),
-        buildButton(
-          onPressed: () {
-            print("S: 1");
-          },
-          icon: FontAwesomeIcons.line,
-          color: Colors.green,
-        ),
-        buildButton(
-          onPressed: () {
-            print("S: 1");
-          },
-          icon: FontAwesomeIcons.apple,
-          color: Colors.grey,
-        ),
-        buildButton(
-          onPressed: () {
-            print("S: 1");
-          },
-          icon: FontAwesomeIcons.twitter,
-          color: Colors.blue,
-        ),
-        buildButton(
-          onPressed: () {
-            print("S: 1");
-          },
-          icon: FontAwesomeIcons.twitch,
-          color: Colors.purple,
-        ),
-      ],
-    );
-  }
-
-  FloatingActionButton buildButton({
-    IconData icon = Icons.add,
-    Color color = Colors.black,
-    @required VoidCallback onPressed,
-  }) {
-    return FloatingActionButton(
-      mini: true,
-      backgroundColor: Colors.white,
-      child: FaIcon(
-        icon,
-        color: color,
-      ),
-      onPressed: onPressed,
-    );
-  }
-}
