@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_flutter/src/commons/constants.dart';
+import 'package:my_flutter/src/pages/home/home_page.dart';
 import 'package:my_flutter/src/pages/login/widgets/login_button.dart';
 import 'package:my_flutter/src/utils/StringValidator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Form extends StatefulWidget {
   Form({
@@ -59,7 +62,7 @@ class _FormState extends State<Form> {
           ),
         ),
         LoginButton(
-          onPressed: () {
+          onPressed: () async {
             print(_usernameController.text);
             print(_passwordController.text);
 
@@ -85,8 +88,19 @@ class _FormState extends State<Form> {
               setState(() {});
             }
 
-            if (username == "admin" && password == "12345678") {
-              //TODO
+            if (username == "admin@gmail.com" && password == "12345678") {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.setString(
+                  Constants.PREF_TOKEN, "ghjkghjkghjkghjkgjhkg");
+              await prefs.setString(Constants.PREF_USERNAME, username);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return HomePage();
+                  },
+                ),
+              );
             } else {
               showDialog(
                 barrierDismissible: false,
@@ -96,13 +110,13 @@ class _FormState extends State<Form> {
                   content: Text("Username or Password incorrect!!"),
                   actions: [
                     FlatButton(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.pop(context);
                       },
                       child: Text("ยกเลิก"),
                     ),
                     FlatButton(
-                      onPressed: (){
+                      onPressed: () {
                         Navigator.pop(context);
                       },
                       child: Text("ตกลง"),

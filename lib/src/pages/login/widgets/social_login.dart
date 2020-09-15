@@ -56,6 +56,7 @@ class SocialLogin extends StatelessWidget {
     @required VoidCallback onPressed,
   }) {
     return FloatingActionButton(
+      heroTag: GlobalKey(),
       mini: true,
       backgroundColor: Colors.white,
       child: FaIcon(
