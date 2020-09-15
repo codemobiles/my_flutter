@@ -67,13 +67,16 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  FlatButton _buildForgotPassword() {
-    return FlatButton(
-      textColor: Colors.white,
-      onPressed: () {
-        print("Forgot password click");
-      },
-      child: Text("Forgot password?"),
+  Container _buildForgotPassword() {
+    return Container(
+      margin: EdgeInsets.only(top: 18),
+      child: FlatButton(
+        textColor: Colors.white,
+        onPressed: () {
+          print("Forgot password click");
+        },
+        child: Text("Forgot password?"),
+      ),
     );
   }
 }
