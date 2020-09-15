@@ -20,25 +20,40 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Row _buildDivider() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          color: Colors.white,
-          width: 120,
-          height: 1,
+  Container _buildDivider() {
+    final divider = ({isRight = false}) {
+      final colors = [Colors.white, Colors.white10];
+      return Container(
+        width: 120,
+        height: 1,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: isRight ? colors : colors.reversed.toList(),
+              stops: [0, 1],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight),
         ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          child: Text("or"),
-        ),
-        Container(
-          color: Colors.white,
-          width: 120,
-          height: 1,
-        )
-      ],
+      );
+    };
+
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 22),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          divider(),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              "or",
+              style: TextStyle(
+                color: Colors.white70,
+              ),
+            ),
+          ),
+          divider(isRight: true),
+        ],
+      ),
     );
   }
 
