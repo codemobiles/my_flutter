@@ -8,19 +8,22 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: Background.gradient,
-        ),
-        child: Column(
-          children: [
-            SizedBox(height: 62),
-            Image.asset(Constants.IMAGE_HEADER),
-            myForm.Form(),
-            _buildForgotPassword(),
-            _buildDivider(),
-            SocialLogin(),
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          height: 800,
+          decoration: BoxDecoration(
+            gradient: Background.gradient,
+          ),
+          child: Column(
+            children: [
+              SizedBox(height: 62),
+              Image.asset(Constants.IMAGE_HEADER),
+              myForm.Form(),
+              _buildForgotPassword(),
+              _buildDivider(),
+              SocialLogin(),
+            ],
+          ),
         ),
       ),
     );

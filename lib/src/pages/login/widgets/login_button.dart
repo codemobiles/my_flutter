@@ -3,6 +3,10 @@ import 'package:my_flutter/src/pages/login/background.dart';
 
 class LoginButton extends StatelessWidget {
 
+  final VoidCallback onPressed;
+
+  const LoginButton({Key key, this.onPressed}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,9 +46,7 @@ class LoginButton extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        onPressed: (){
-          //todo
-        },
+        onPressed: onPressed,
       ),
     );
   }
