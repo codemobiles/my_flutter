@@ -19,10 +19,10 @@ class NetworkService {
       ],
     );
 
-  static const _baseURL = "https://cmpos-demo.herokuapp.com";
+  static const baseURL = "https://cmpos-demo.herokuapp.com";
 
   Future<List<ProductResponse>> getStock() async {
-    final url = '$_baseURL/product';
+    final url = '$baseURL/product';
 
     final Response response = await _dio.get(url);
 
