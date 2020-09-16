@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_flutter/src/commons/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -8,7 +10,12 @@ class HomePage extends StatelessWidget {
         title: Text("My Stock"),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              SharedPreferences.getInstance().then((pref) {
+                pref.remove(Constants.PREF_TOKEN);
+                //pref.clear();
+              });
+            },
             icon: Icon(Icons.exit_to_app),
           ),
         ],
@@ -48,5 +55,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-
