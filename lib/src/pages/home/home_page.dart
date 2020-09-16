@@ -30,23 +30,49 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: FutureBuilder<List<ProductResponse>>(
-        future: NetworkService().getStock(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return CircularProgressIndicator();
-          }
+      body: Body(),
+      // context
+    );
+  }
+}
 
-          return ItemCard(
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<ProductResponse>>(
+      future: NetworkService().getStock(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(snapshot.error.toString()),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            await Future.delayed(Duration(seconds: 1));
+            setState(() {});
+          },
+          child: ItemCard(
             productList: snapshot.data.map((product) {
               product.image =
                   NetworkService.baseURL + "/images/" + product.image;
               return product;
             }).toList(),
-          );
-        },
-      ),
-      // context
+          ),
+        );
+      },
     );
   }
 }
@@ -62,9 +88,12 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      padding: EdgeInsets.all(4),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 0.8,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
       ),
       itemBuilder: (context, index) {
         final product = productList[index];
@@ -76,6 +105,7 @@ class ItemCard extends StatelessWidget {
 
   Card _buildCard(ProductResponse product) {
     return Card(
+      margin: EdgeInsets.all(0),
       child: Column(
         children: [
           _buildImage(product),
@@ -118,7 +148,8 @@ class ItemCard extends StatelessWidget {
             margin: EdgeInsets.all(0),
             color: Colors.orange,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: Text("best seller"),
             ),
           ),
