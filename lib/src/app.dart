@@ -9,7 +9,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    feedDemo();
+    // feedDemo();
 
     final _route = <String, WidgetBuilder>{
       Constants.HOME_ROUTE : (context) => HomePage(),
@@ -37,10 +37,10 @@ class App extends StatelessWidget {
     );
   }
 
-  feedDemo() async {
-    var url = 'https://jsonplaceholder.typicode.com/posts';
-    var response = await http.get(url,);
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-  }
+  // feedDemo() async {
+  //   var url = 'https://jsonplaceholder.typicode.com/posts';
+  //   var response = await http.get(url,);
+  //   print('Response status: ${response.statusCode}');
+  //   print('Response body: ${response.body}');
+  // }
 }
