@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:my_flutter/src/pages/home/home_page.dart';
+import 'package:my_flutter/src/pages/home/widgets/create.dart';
 import 'package:my_flutter/src/pages/home/widgets/stock.dart';
 
 class TabModel {
@@ -25,7 +26,7 @@ class TabViewModel {
           icon: Icon(Icons.create),
           child: Text("CREATE"),
         ),
-        Text("Create"),
+        CreateProduct(),
       ),
     ].toList();
   }
