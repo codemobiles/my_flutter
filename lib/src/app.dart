@@ -7,7 +7,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    final _route = <String, WidgetBuilder>{
+      Constants.HOME_ROUTE : (context) => HomePage(),
+      Constants.LOGIN_ROUTE : (context) => LoginPage(),
+    };
+
     return MaterialApp(
+      routes: _route,
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(

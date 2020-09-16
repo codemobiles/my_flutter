@@ -9,4 +9,7 @@ class Constants {
   static final String PREF_USERNAME = "username";
   static final String PREF_TOKEN = "token";
 
+  static final String HOME_ROUTE = "home";
+  static final String LOGIN_ROUTE = "login";
+
 }

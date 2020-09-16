@@ -14,6 +14,14 @@ class HomePage extends StatelessWidget {
               SharedPreferences.getInstance().then((pref) {
                 pref.remove(Constants.PREF_TOKEN);
                 //pref.clear();
+
+                Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    Constants.LOGIN_ROUTE,
+                    (
+                      Route<dynamic> route,
+                    ) =>
+                        false);
               });
             },
             icon: Icon(Icons.exit_to_app),

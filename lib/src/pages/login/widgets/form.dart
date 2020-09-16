@@ -93,14 +93,15 @@ class _FormState extends State<Form> {
               await prefs.setString(
                   Constants.PREF_TOKEN, "ghjkghjkghjkghjkgjhkg");
               await prefs.setString(Constants.PREF_USERNAME, username);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return HomePage();
-                  },
-                ),
-              );
+              // Navigator.pushReplacement(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) {
+              //       return HomePage();
+              //     },
+              //   ),
+              // );
+              Navigator.pushReplacementNamed(context, Constants.HOME_ROUTE);
             } else {
               showDialog(
                 barrierDismissible: false,
