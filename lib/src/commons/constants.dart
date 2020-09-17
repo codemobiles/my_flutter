@@ -11,5 +11,6 @@ class Constants {
 
   static final String HOME_ROUTE = "home";
   static final String LOGIN_ROUTE = "login";
+  static final String MAP_ROUTE = "map";
 
 }

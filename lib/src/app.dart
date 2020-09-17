@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_flutter/src/commons/constants.dart';
 import 'package:my_flutter/src/pages/home/home_page.dart';
 import 'package:my_flutter/src/pages/login/login_page.dart';
+import 'package:my_flutter/src/pages/map/map_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,6 +15,7 @@ class App extends StatelessWidget {
     final _route = <String, WidgetBuilder>{
       Constants.HOME_ROUTE : (context) => HomePage(),
       Constants.LOGIN_ROUTE : (context) => LoginPage(),
+      Constants.MAP_ROUTE : (context) => MapPage(),
     };
 
     return MaterialApp(

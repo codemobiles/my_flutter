@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_flutter/src/commons/constants.dart';
 import 'package:my_flutter/src/models/product_response.dart';
+import 'package:my_flutter/src/pages/home/widgets/custom_drawer.dart';
 import 'package:my_flutter/src/pages/home/widgets/stock.dart';
 import 'package:my_flutter/src/services/network_service.dart';
 import 'package:my_flutter/src/viewmodels/tab_viewmodel.dart';
@@ -16,6 +17,7 @@ class HomePage extends StatelessWidget {
     return DefaultTabController(
       length: tabViewModel.length,
       child: Scaffold(
+        drawer: CustomDrawer(),
         appBar: _buildAppBar(context),
         body: TabBarView(
           children: widgets,
