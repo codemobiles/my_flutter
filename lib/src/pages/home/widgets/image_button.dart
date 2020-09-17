@@ -21,15 +21,25 @@ class _ImageButtonState extends State<ImageButton> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        OutlineButton(
+        FlatButton.icon(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              width: 1,
+              color: Colors.grey[300],
+              style: BorderStyle.solid,
+            ),
+            borderRadius: BorderRadius.all(Radius.circular(4))
+          ),
           onPressed: () {
             showDialog(
               context: context,
               builder: (context) => _buildCustomDialog(),
             );
           },
-          child: Text("image"),
+          label: Text("image"),
+          icon: Icon(Icons.image),
         ),
         _buildImagePreview(),
       ],
@@ -38,7 +48,12 @@ class _ImageButtonState extends State<ImageButton> {
 
   _buildImagePreview() {
     if (_imageFile != null) {
-      return Image.file(_imageFile);
+      return GestureDetector(
+        onTap: () {
+          _cropImage();
+        },
+        child: Image.file(_imageFile),
+      );
     }
     return SizedBox();
   }
@@ -50,15 +65,29 @@ class _ImageButtonState extends State<ImageButton> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            FlatButton(
-              child: Text("CAMERA"),
+            OutlineButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.camera),
+                  SizedBox(width: 4),
+                  Text("CAMERA"),
+                ],
+              ),
               onPressed: () {
                 getImage();
               },
             ),
             SizedBox(height: 6),
-            FlatButton(
-              child: Text("GALLERY"),
+            OutlineButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.photo_library),
+                  SizedBox(width: 4),
+                  Text("gallery".toUpperCase()),
+                ],
+              ),
               onPressed: () {
                 getImage(imageSource: ImageSource.gallery);
               },
