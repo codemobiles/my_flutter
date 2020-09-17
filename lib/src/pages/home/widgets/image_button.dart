@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageButton extends StatefulWidget {
-  ImageButton(Function(File imageFile) callBack);
+  final Function(File imageFile) callBack;
+
+  ImageButton(this.callBack);
 
   @override
   _ImageButtonState createState() => _ImageButtonState();
@@ -77,10 +80,43 @@ class _ImageButtonState extends State<ImageButton> {
     final pickedFile = await picker.getImage(source: imageSource);
 
     if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+      _imageFile = File(pickedFile.path);
+      _cropImage();
       Navigator.pop(context);
     }
+  }
+
+  void _cropImage() {
+    ImageCropper.cropImage(
+      sourcePath: _imageFile.path,
+      aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+        CropAspectRatioPreset.ratio3x2,
+        CropAspectRatioPreset.original,
+        CropAspectRatioPreset.ratio4x3,
+        CropAspectRatioPreset.ratio16x9
+      ],
+      androidUiSettings: AndroidUiSettings(
+        toolbarTitle: 'Cropper',
+        toolbarColor: Colors.blue,
+        toolbarWidgetColor: Colors.white,
+        statusBarColor: Colors.black,
+        initAspectRatio: CropAspectRatioPreset.original,
+        lockAspectRatio: false,
+      ),
+      iosUiSettings: IOSUiSettings(
+        minimumAspectRatio: 1.0,
+      ),
+      maxWidth: 5500,
+      maxHeight: 5500,
+      cropStyle: CropStyle.circle,
+    ).then((file) {
+      if (file != null) {
+        setState(() {
+          _imageFile = file;
+          widget.callBack(_imageFile);
+        });
+      }
+    });
   }
 }
