@@ -32,8 +32,10 @@ class _StockState extends State<Stock> {
           },
           child: ItemCard(
             productList: snapshot.data.map((product) {
-              product.image =
-                  NetworkService.baseURL + "/images/" + product.image;
+              if (product.image != null) {
+                product.image =
+                    NetworkService.baseURL + "/images/" + product.image;
+              }
               return product;
             }).toList(),
           ),
@@ -81,15 +83,15 @@ class ItemCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  product.name,
+                  product.name ?? "",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(product.price.toString()),
-                    Text(product.stock.toString()),
+                    Text("${product.price ?? "0"}"),
+                    Text("${product.stock ?? "0"}"),
                   ],
                 ),
               ],
@@ -103,10 +105,18 @@ class ItemCard extends StatelessWidget {
   Stack _buildImage(ProductResponse product) {
     return Stack(
       children: [
-        Image.network(
-          product.image,
-          height: 180,
-        ),
+        product.image != null
+            ? Image.network(
+                product.image,
+                height: 180,
+              )
+            : Container(
+                height: 180,
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.close,
+                ),
+              ),
         Positioned(
           top: 6,
           right: 2,
@@ -115,7 +125,7 @@ class ItemCard extends StatelessWidget {
             color: Colors.orange,
             child: Padding(
               padding:
-              const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: Text("best seller"),
             ),
           ),

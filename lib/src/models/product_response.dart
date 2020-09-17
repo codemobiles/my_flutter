@@ -29,20 +29,20 @@ class ProductResponse {
 
   factory ProductResponse.fromJson(Map<String, dynamic> json) => ProductResponse(
     id: json["id"],
-    name: json["name"],
-    image: json["image"],
-    stock: json["stock"],
-    price: json["price"],
+    name: json["name"] == null ? null : json["name"],
+    image: json["image"] == null ? null : json["image"],
+    stock: json["stock"] == null ? null : json["stock"],
+    price: json["price"] == null ? null : json["price"],
     createdAt: DateTime.parse(json["createdAt"]),
     updatedAt: DateTime.parse(json["updatedAt"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": name,
-    "image": image,
-    "stock": stock,
-    "price": price,
+    "name": name == null ? null : name,
+    "image": image == null ? null : image,
+    "stock": stock == null ? null : stock,
+    "price": price == null ? null : price,
     "createdAt": createdAt.toIso8601String(),
     "updatedAt": updatedAt.toIso8601String(),
   };

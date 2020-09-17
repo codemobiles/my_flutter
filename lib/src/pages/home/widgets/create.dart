@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:my_flutter/src/models/product_response.dart';
 import 'package:my_flutter/src/pages/home/widgets/image_button.dart';
+import 'package:my_flutter/src/services/network_service.dart';
 
 class CreateProduct extends StatefulWidget {
   @override
@@ -123,8 +125,7 @@ class _CreateProductState extends State<CreateProduct> {
             child: Text("submit"),
             onPressed: () {
               _form.currentState.save();
-              print(productResponse.name);
-              print(_imageFile);
+              addProduct();
             },
           ),
         ),
@@ -134,11 +135,37 @@ class _CreateProductState extends State<CreateProduct> {
     _imageFile = imageFile;
   }
 
-  void addProduct() {}
+  void addProduct() {
+    NetworkService().addProduct(_imageFile, productResponse).then((value) {
+      if (value.isEmpty) {
+        showAlertBar(
+          message: "upload failure",
+          icon: Icons.close,
+          color: Colors.red,
+        );
+      } else {
+        showAlertBar(
+          message: value,
+        );
+      }
+    });
+  }
 
   void showAlertBar({
     String message,
     IconData icon = FontAwesomeIcons.checkCircle,
     MaterialColor color = Colors.green,
-  }) {}
+  }) {
+    Flushbar(
+      message: message,
+      icon: Icon(
+        icon,
+        size: 28.0,
+        color: color,
+      ),
+      flushbarPosition: FlushbarPosition.TOP,
+      duration: Duration(seconds: 3),
+      flushbarStyle: FlushbarStyle.GROUNDED,
+    )..show(context);
+  }
 }
