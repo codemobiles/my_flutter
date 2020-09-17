@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -11,7 +13,7 @@ class MapPage extends StatefulWidget {
 class MapPageState extends State<MapPage> {
   Completer<GoogleMapController> _controller = Completer();
 
-  static final CameraPosition _kGooglePlex = CameraPosition(
+  static final CameraPosition _initLocation = CameraPosition(
     target: LatLng(13.7625754, 100.4938512),
     zoom: 12.4746,
   );
@@ -28,13 +30,27 @@ class MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: GoogleMap(
-        markers: _markers,
-        mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-        },
+      body: Stack(
+        children: [
+          GoogleMap(
+            markers: _markers,
+            mapType: MapType.normal,
+            initialCameraPosition: _initLocation,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            zoomControlsEnabled: false,
+            trafficEnabled: true,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              oneTimeLocation();
+            },
+            child: Icon(Icons.my_location),
+          )
+        ],
       ),
     );
   }
@@ -47,18 +63,35 @@ class MapPageState extends State<MapPage> {
 
     dummyLocations.forEach((latLng) {
       Marker marker = Marker(
-        markerId: MarkerId(UniqueKey().toString()),
-        position: latLng,
-        infoWindow: InfoWindow(
-          title: "CM",
-          snippet: "09:00 - 18:00",
-        )
-      );
+          markerId: MarkerId(UniqueKey().toString()),
+          position: latLng,
+          infoWindow: InfoWindow(
+            title: "CM",
+            snippet: "09:00 - 18:00",
+          ));
       _markers.add(marker);
     });
 
-    setState(() {
+    setState(() {});
+  }
 
-    });
+  oneTimeLocation() async {
+    try {
+      Location().getLocation().then((currentLocation) {
+        final lat = currentLocation.latitude;
+        final lng = currentLocation.longitude;
+        animateCamera(position: LatLng(lat, lng));
+      });
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        print('Permission denied');
+      }
+      print('oneTimeLocation error: ${e.message}');
+    }
+  }
+
+  Future<void> animateCamera({LatLng position}) async {
+    GoogleMapController google = await _controller.future;
+    google.animateCamera(CameraUpdate.newLatLngZoom(position, 12));
   }
 }
