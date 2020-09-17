@@ -147,6 +147,8 @@ class _CreateProductState extends State<CreateProduct> {
         showAlertBar(
           message: value,
         );
+        _form.currentState.reset();
+        // clear state of image (HW)
       }
     });
   }
