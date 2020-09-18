@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,8 +7,9 @@ import 'package:image_picker/image_picker.dart';
 
 class ImageButton extends StatefulWidget {
   final Function(File imageFile) callBack;
+  final StreamController<bool> resetImageStreamController;
 
-  ImageButton(this.callBack);
+  ImageButton(this.callBack, this.resetImageStreamController);
 
   @override
   _ImageButtonState createState() => _ImageButtonState();
@@ -25,13 +27,12 @@ class _ImageButtonState extends State<ImageButton> {
       children: [
         FlatButton.icon(
           shape: RoundedRectangleBorder(
-            side: BorderSide(
-              width: 1,
-              color: Colors.grey[300],
-              style: BorderStyle.solid,
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(4))
-          ),
+              side: BorderSide(
+                width: 1,
+                color: Colors.grey[300],
+                style: BorderStyle.solid,
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(4))),
           onPressed: () {
             showDialog(
               context: context,
@@ -46,16 +47,26 @@ class _ImageButtonState extends State<ImageButton> {
     );
   }
 
+// FutureBuilder vs StreamBuilder
   _buildImagePreview() {
-    if (_imageFile != null) {
-      return GestureDetector(
-        onTap: () {
-          _cropImage();
-        },
-        child: Image.file(_imageFile),
-      );
-    }
-    return SizedBox();
+    return StreamBuilder<bool>(
+      stream: widget.resetImageStreamController.stream,
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data == true) {
+          _imageFile = null;
+        }
+
+        if (_imageFile != null) {
+          return GestureDetector(
+            onTap: () {
+              _cropImage();
+            },
+            child: Image.file(_imageFile),
+          );
+        }
+        return SizedBox();
+      },
+    );
   }
 
   _buildCustomDialog() {
@@ -141,10 +152,9 @@ class _ImageButtonState extends State<ImageButton> {
       cropStyle: CropStyle.circle,
     ).then((file) {
       if (file != null) {
-        setState(() {
-          _imageFile = file;
-          widget.callBack(_imageFile);
-        });
+        _imageFile = file;
+        widget.resetImageStreamController.add(false);
+        widget.callBack(_imageFile);
       }
     });
   }

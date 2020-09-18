@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flushbar/flushbar.dart';
@@ -20,10 +21,18 @@ class _CreateProductState extends State<CreateProduct> {
 
   ProductResponse productResponse;
 
+  final StreamController<bool> resetImageStreamController = StreamController();
+
   @override
   void initState() {
     productResponse = ProductResponse();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    resetImageStreamController?.close();
+    super.dispose();
   }
 
   @override
@@ -58,7 +67,7 @@ class _CreateProductState extends State<CreateProduct> {
                         ],
                       ),
                       SizedBox(height: 2),
-                      ImageButton(callBack),
+                      ImageButton(callBack, resetImageStreamController),
                       SizedBox(height: 120),
                     ],
                   ),
@@ -150,7 +159,7 @@ class _CreateProductState extends State<CreateProduct> {
           message: value,
         );
         _form.currentState.reset();
-        // clear state of image (HW)
+        resetImageStreamController.add(true);
       }
     });
   }
