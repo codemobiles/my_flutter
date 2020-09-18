@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -7,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:my_flutter/src/commons/constants.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -43,29 +45,36 @@ class MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
-    return new Scaffold(
-      body: Stack(
-        children: [
-          GoogleMap(
-            markers: _markers,
-            mapType: MapType.normal,
-            initialCameraPosition: _initLocation,
-            myLocationEnabled: true,
-            myLocationButtonEnabled: true,
-            zoomControlsEnabled: false,
-            trafficEnabled: true,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-          ),
-          FloatingActionButton(
-            onPressed: () {
-              //oneTimeLocation();
-              trackingLocation();
-            },
-            child: Icon(Icons.my_location),
-          )
-        ],
+    return SafeArea(
+      child: new Scaffold(
+        body: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            GoogleMap(
+              markers: _markers,
+              mapType: MapType.normal,
+              initialCameraPosition: _initLocation,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              trafficEnabled: true,
+              onMapCreated: (GoogleMapController controller) {
+                _controller.complete(controller);
+              },
+            ),
+            Container(
+              margin: EdgeInsets.all(18),
+              child: FloatingActionButton(
+                onPressed: () {
+                  //oneTimeLocation();
+                  trackingLocation();
+                },
+                backgroundColor: _locationSubscription != null ? Colors.red : null,
+                child:  Icon(Icons.my_location),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -135,6 +144,7 @@ class MapPageState extends State<MapPage> {
                 final latLng = LatLng(result.latitude, result.longitude);
                 await addMarker(
                   latLng,
+                  isShowInfo: true,
                 );
                 setState(() {
                   animateCamera(position: latLng);
@@ -173,12 +183,12 @@ class MapPageState extends State<MapPage> {
     LatLng position, {
     String title = 'none',
     String snippet = 'none',
-    String pinAsset = "assets/images/header_1.png",
+    String pinAsset = "assets/images/biker.png",
     bool isShowInfo = false,
   }) async {
     final Uint8List markerIcon = await getBytesFromAsset(
       pinAsset,
-      width: _height * 50 ~/ 100,
+      width: _height * 20 ~/ 100,
     );
     final BitmapDescriptor bitmap = BitmapDescriptor.fromBytes(markerIcon);
 
@@ -192,10 +202,10 @@ class MapPageState extends State<MapPage> {
                 title: title,
                 snippet: snippet,
                 onTap: () {
-                  // _launchMaps(
-                  //   lat: position.latitude,
-                  //   lng: position.longitude,
-                  // );
+                  _launchMaps(
+                    lat: position.latitude,
+                    lng: position.longitude,
+                  );
                 },
               )
             : null,
@@ -220,5 +230,30 @@ class MapPageState extends State<MapPage> {
     return (await fi.image.toByteData(format: ImageByteFormat.png))
         .buffer
         .asUint8List();
+  }
+
+  _launchMaps({double lat, double lng}) async {
+    // Set Google Maps URL Scheme for iOS in info.plist (comgooglemaps)
+
+    const googleMapSchemeIOS = 'comgooglemaps://';
+    const googleMapURL = 'https://maps.google.com/';
+    const appleMapURL = 'https://maps.apple.com/';
+    final parameter = '?z=16&q=$lat,$lng';
+
+    if (Platform.isIOS) {
+      if (await canLaunch(googleMapSchemeIOS)) {
+        return await launch(googleMapSchemeIOS + parameter);
+      }
+
+      if (await canLaunch(appleMapURL)) {
+        return await launch(appleMapURL + parameter);
+      }
+    } else {
+      if (await canLaunch(googleMapURL)) {
+        return await launch(googleMapURL + parameter);
+      }
+    }
+
+    throw 'Could not launch url';
   }
 }

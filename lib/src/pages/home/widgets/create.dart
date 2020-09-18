@@ -28,45 +28,47 @@ class _CreateProductState extends State<CreateProduct> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: <Widget>[
-        Container(
-          color: Colors.white,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: Form(
-                key: _form,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _buildProductName(),
-                    SizedBox(height: spacingInput),
-                    Row(
-                      children: <Widget>[
-                        Flexible(
-                          child: _buildProductPrice(),
-                          flex: 1,
-                        ),
-                        SizedBox(width: spacingInput),
-                        Flexible(
-                          child: _buildProductStock(),
-                          flex: 1,
-                        )
-                      ],
-                    ),
-                    SizedBox(height: 2),
-                    ImageButton(callBack),
-                    SizedBox(height: 120),
-                  ],
+    return SafeArea(
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Container(
+            color: Colors.white,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+                child: Form(
+                  key: _form,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _buildProductName(),
+                      SizedBox(height: spacingInput),
+                      Row(
+                        children: <Widget>[
+                          Flexible(
+                            child: _buildProductPrice(),
+                            flex: 1,
+                          ),
+                          SizedBox(width: spacingInput),
+                          Flexible(
+                            child: _buildProductStock(),
+                            flex: 1,
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 2),
+                      ImageButton(callBack),
+                      SizedBox(height: 120),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        _buildSubmitButton(),
-      ],
+          _buildSubmitButton(),
+        ],
+      ),
     );
   }
 
