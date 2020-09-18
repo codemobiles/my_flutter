@@ -45,9 +45,6 @@
             android:value="2" />
 
 
-
-
-
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"

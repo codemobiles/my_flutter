@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_flutter/src/bloc/login/login_cubit.dart';
 import 'package:my_flutter/src/commons/constants.dart';
 import 'package:my_flutter/src/pages/home/home_page.dart';
 import 'package:my_flutter/src/pages/login/widgets/login_button.dart';
@@ -21,12 +23,12 @@ class _FormState extends State<Form> {
 
   bool _showPassword;
 
-  String _usernameErrorMessage;
-  String _passwordErrorMessage;
+  LoginCubit _loginCubit;
 
   @override
   void initState() {
     _showPassword = true;
+    _loginCubit = LoginCubit();
     super.initState();
   }
 
@@ -39,116 +41,94 @@ class _FormState extends State<Form> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Card(
-          margin: EdgeInsets.only(top: 28, bottom: 23, left: 22, right: 22),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 18, horizontal: 22),
-            child: Column(
-              children: [
-                buildUsernameInput(),
-                Divider(
-                  height: 16,
-                  indent: 20,
-                  endIndent: 20,
-                  thickness: 1,
-                ),
-                buildPasswordInput(),
-                SizedBox(height: 32),
-              ],
-            ),
-          ),
-        ),
-        LoginButton(
-          onPressed: () async {
-            print(_usernameController.text);
-            print(_passwordController.text);
+    return CubitBuilder<LoginCubit, LoginState>(
+      buildWhen: (previousState, state) {
+        if (state is LoginSuccess) {
+          Navigator.pushReplacementNamed(context, Constants.HOME_ROUTE);
+        }
 
-            var username = _usernameController.text;
-            if (username.isEmpty) {
-              _usernameErrorMessage = "not empty";
-              setState(() {});
-            }
-
-            if (!EmailSubmitRegexValidator().isValid(username)) {
-              _usernameErrorMessage = "not empty";
-              setState(() {});
-            }
-
-            var password = _passwordController.text;
-            if (password.length < 8) {
-              _passwordController.text = "";
-              _passwordErrorMessage =
-                  "The Password must be at least 8 characters.";
-              setState(() {});
-            } else {
-              _passwordErrorMessage = null;
-              setState(() {});
-            }
-
-            if (username == "admin@gmail.com" && password == "12345678") {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.setString(
-                  Constants.PREF_TOKEN, "ghjkghjkghjkghjkgjhkg");
-              await prefs.setString(Constants.PREF_USERNAME, username);
-              // Navigator.pushReplacement(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) {
-              //       return HomePage();
-              //     },
-              //   ),
-              // );
-              Navigator.pushReplacementNamed(context, Constants.HOME_ROUTE);
-            } else {
-              showDialog(
-                barrierDismissible: false,
-                context: context,
-                child: AlertDialog(
-                  title: Text("Login"),
-                  content: Text("Username or Password incorrect!!"),
-                  actions: [
-                    FlatButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("ยกเลิก"),
+        if (state is LoginFailure) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              child: AlertDialog(
+                title: Text("Login"),
+                content: Text("Username or Password incorrect!!"),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("ยกเลิก"),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("ตกลง"),
+                  )
+                ],
+              ),
+            );
+          });
+        }
+        return true;
+      },
+      cubit: _loginCubit,
+      builder: (context, state) {
+        return Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Card(
+              margin: EdgeInsets.only(top: 28, bottom: 23, left: 22, right: 22),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 18, horizontal: 22),
+                child: Column(
+                  children: [
+                    buildUsernameInput(state),
+                    Divider(
+                      height: 16,
+                      indent: 20,
+                      endIndent: 20,
+                      thickness: 1,
                     ),
-                    FlatButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("ตกลง"),
-                    )
+                    buildPasswordInput(state),
+                    if (state is LoginInProgress) CircularProgressIndicator(),
+                    SizedBox(height: 32),
                   ],
                 ),
-              );
-            }
-          },
-        ),
-      ],
+              ),
+            ),
+            LoginButton(
+              onPressed: () {
+                _loginCubit.login(
+                    _usernameController.text, _passwordController.text);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
-  buildUsernameInput() => TextField(
+  buildUsernameInput(LoginState state) => TextField(
         controller: _usernameController,
         decoration: InputDecoration(
           border: InputBorder.none,
           labelText: "username",
-          errorText: _usernameErrorMessage,
+          errorText: state is LoginInValid ? state.errorUsername : null,
           icon: Icon(Icons.person),
           hintText: "username",
         ),
       );
 
-  buildPasswordInput() => TextField(
+  buildPasswordInput(LoginState state) => TextField(
         obscureText: _showPassword,
         controller: _passwordController,
         decoration: InputDecoration(
           border: InputBorder.none,
-          errorText: _passwordErrorMessage,
+          errorText: state is LoginInValid ? state.errorPassword : null,
           icon: Icon(Icons.lock),
           labelText: "password",
           hintText: "password",
@@ -164,10 +144,4 @@ class _FormState extends State<Form> {
           ),
         ),
       );
-}
-
-class EmailSubmitRegexValidator extends RegexValidator {
-  EmailSubmitRegexValidator()
-      : super(
-            regexSource: "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-]+\$)");
 }
