@@ -55,7 +55,7 @@
 
 
 
-    <key>NSLocationAlwaysUsageDescription</key>
+   <key>NSLocationAlwaysUsageDescription</key>
    <string>Needed to access location</string>
    <key>NSLocationWhenInUseUsageDescription</key>
    <string>Needed to access location</string>
